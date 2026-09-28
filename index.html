@@ -1,0 +1,1065 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>迷雀</title>
+
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: #0f172a;
+            color: #ffffff;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: #1e293b;
+            border-radius: 14px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        h2 {
+            margin-top: 0;
+        }
+
+        label {
+            display: block;
+            margin: 15px 0;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            box-sizing: border-box;
+            font-size: 16px;
+            border-radius: 8px;
+            border: 1px solid #64748b;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            margin-top: 12px;
+            border: none;
+            border-radius: 10px;
+            background: #2563eb;
+            color: #ffffff;
+            font-size: 17px;
+            font-weight: bold;
+        }
+
+        .red {
+            background: #dc2626;
+        }
+
+        .gray {
+            background: #64748b;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .info {
+            text-align: center;
+            font-size: 20px;
+            margin: 15px 0;
+        }
+
+        .suit {
+            background: #334155;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+
+        .suit h3 {
+            margin-top: 0;
+        }
+
+        .tiles {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .tile {
+            width: 48px;
+            height: 62px;
+            background: #ffffff;
+            color: #111827;
+            border-radius: 7px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 38px;
+            font-family: "Noto Sans Symbols 2", "Segoe UI Symbol", sans-serif;
+        }
+
+        .normal {
+            opacity: 0.75;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- ==================== -->
+    <!-- 対局者名入力 -->
+    <!-- ==================== -->
+
+    <div id="playerSetup">
+
+        <h1>🀄 迷雀</h1>
+
+        <div class="card">
+
+            <h2 style="text-align:center;">
+                牌の順番を変えて<br>
+                麻雀してみよう！
+            </h2>
+
+            <p style="text-align:center;">
+                対局者名を入力してください。
+            </p>
+
+            <label>
+                対局者1
+                <input type="text" id="player1Name" placeholder="対局者1">
+            </label>
+
+            <label>
+                対局者2
+                <input type="text" id="player2Name" placeholder="対局者2">
+            </label>
+
+            <label>
+                対局者3
+                <input type="text" id="player3Name" placeholder="対局者3">
+            </label>
+
+            <label>
+                対局者4
+                <input type="text" id="player4Name" placeholder="対局者4">
+            </label>
+
+            <button onclick="goToRuleSetup()">
+                牌の変更ルールを設定する
+            </button>
+
+        </div>
+    </div>
+
+
+    <!-- ==================== -->
+    <!-- ルール設定 -->
+    <!-- ==================== -->
+
+    <div id="setup" class="hidden">
+
+        <h1>🀄 迷雀</h1>
+
+        <div class="card">
+
+            <h2>半荘のルールを設定してください。</h2>
+
+            <p>
+                チェックを入れた種類の牌だけ、順番を変更します。
+            </p>
+
+            <label>
+                <input type="checkbox" id="man" checked>
+                萬子を変更
+            </label>
+
+            <label>
+                <input type="checkbox" id="pin" checked>
+                筒子を変更
+            </label>
+
+            <label>
+                <input type="checkbox" id="sou" checked>
+                索子を変更
+            </label>
+
+            <label>
+                <input type="checkbox" id="sameOrder">
+                選択した牌種を同じ順番にする
+            </label>
+
+            <label>
+                最初に確認する時間（秒）
+
+                <select id="initialSeconds">
+                    <option value="5">5秒</option>
+                    <option value="10" selected>10秒</option>
+                    <option value="15">15秒</option>
+                    <option value="20">20秒</option>
+                    <option value="30">30秒</option>
+                    <option value="45">45秒</option>
+                    <option value="60">60秒</option>
+                    <option value="90">90秒</option>
+                    <option value="120">120秒</option>
+                </select>
+            </label>
+
+            <label>
+                再確認できる回数
+
+                <select id="checkCount">
+                    <option value="1">1回</option>
+                    <option value="2" selected>2回</option>
+                    <option value="3">3回</option>
+                    <option value="4">4回</option>
+                    <option value="5">5回</option>
+                    <option value="6">6回</option>
+                    <option value="7">7回</option>
+                    <option value="8">8回</option>
+                    <option value="9">9回</option>
+                    <option value="10">10回</option>
+                </select>
+
+                <p>
+                    全員同じ回数から開始します。
+                </p>
+            </label>
+
+            <label>
+                再確認する時間（秒）
+
+                <select id="checkSeconds">
+                    <option value="5" selected>5秒</option>
+                    <option value="10">10秒</option>
+                    <option value="15">15秒</option>
+                    <option value="20">20秒</option>
+                    <option value="30">30秒</option>
+                    <option value="45">45秒</option>
+                    <option value="60">60秒</option>
+                </select>
+            </label>
+
+            <button onclick="startGame()">
+                半荘開始
+            </button>
+
+            <p style="text-align:center; margin-top:10px;">
+                ボタンを押すと、次の画面で変更後の牌の順番が表示されます。
+            </p>
+
+        </div>
+    </div>
+
+
+    <!-- ==================== -->
+    <!-- 牌の順番確認 -->
+    <!-- ==================== -->
+
+    <div id="reveal" class="hidden">
+
+        <h1>🀄 牌の順番</h1>
+
+        <div class="card">
+
+            <div id="countdown" class="info"></div>
+
+            <div id="orders"></div>
+
+            <button class="gray" onclick="finishReveal()">
+                今すぐ隠す
+            </button>
+
+        </div>
+    </div>
+
+
+    <!-- ==================== -->
+    <!-- 半荘進行中 -->
+    <!-- ==================== -->
+
+    <div id="game" class="hidden">
+
+        <h1>🀄 半荘進行中</h1>
+
+        <div class="card">
+
+            <div id="gamePanel" class="info"></div>
+
+            <button class="red" onclick="showEndConfirm()">
+                半荘を終了する
+            </button>
+
+        </div>
+    </div>
+
+    <!-- ==================== -->
+    <!-- 半荘終了確認 -->
+    <!-- ==================== -->
+
+    <div id="confirmEnd" class="hidden">
+
+        <h1>🀄 確認</h1>
+
+        <div class="card">
+
+            <p style="text-align:center; font-size:20px;">
+                半荘を終了しますか？
+            </p>
+
+            <button class="gray" onclick="cancelEndGame()">
+                戻る
+            </button>
+
+            <button class="red" onclick="endGame()">
+                終了する
+            </button>
+
+        </div>
+
+    </div>
+    <!-- ==================== -->
+    <!-- 結果 -->
+    <!-- ==================== -->
+
+    <div id="result" class="hidden">
+
+        <h1>🀄 半荘終了</h1>
+
+        <div class="card">
+
+            <h2>今回使用した牌の順番</h2>
+
+            <div id="resultOrders"></div>
+
+            <button onclick="backToStart()">
+                最初の画面に戻る
+            </button>
+
+        </div>
+    </div>
+
+</div>
+
+
+<script>
+
+    var orders = {};
+
+    var changedTypes = [];
+
+    var allTypes = [
+        "萬子",
+        "筒子",
+        "索子"
+    ];
+
+    var remainingChecks = 0;
+
+    var playerNames = [];
+
+    var playerChecks = [];
+
+    var checkSeconds = 5;
+
+    var timer = null;
+
+
+    /* ==================== */
+    /* ルール設定画面へ */
+    /* ==================== */
+
+    function goToRuleSetup() {
+
+        playerNames = [];
+
+        for (var i = 1; i <= 4; i++) {
+
+            var name =
+                document
+                .getElementById("player" + i + "Name")
+                .value
+                .trim();
+
+            if (name === "") {
+                name = "対局者" + i;
+            }
+
+            playerNames.push(name);
+        }
+
+        document
+        .getElementById("playerSetup")
+        .classList
+        .add("hidden");
+
+        document
+        .getElementById("setup")
+        .classList
+        .remove("hidden");
+    }
+
+
+    /* ==================== */
+    /* 麻雀牌の絵柄 */
+    /* ==================== */
+
+    var tileSymbols = {
+
+        "萬子": [
+            "🀇",
+            "🀈",
+            "🀉",
+            "🀊",
+            "🀋",
+            "🀌",
+            "🀍",
+            "🀎",
+            "🀏"
+        ],
+
+        "筒子": [
+            "🀙",
+            "🀚",
+            "🀛",
+            "🀜",
+            "🀝",
+            "🀞",
+            "🀟",
+            "🀠",
+            "🀡"
+        ],
+
+        "索子": [
+            "🀐",
+            "🀑",
+            "🀒",
+            "🀓",
+            "🀔",
+            "🀕",
+            "🀖",
+            "🀗",
+            "🀘"
+        ]
+    };
+
+
+    /* ==================== */
+    /* ランダムな1～9 */
+    /* ==================== */
+
+    function makeOrder() {
+
+        var numbers = [
+            1,2,3,4,5,6,7,8,9
+        ];
+
+        for (
+            var i = numbers.length - 1;
+            i > 0;
+            i--
+        ) {
+
+            var j =
+                Math.floor(
+                    Math.random() * (i + 1)
+                );
+
+            var temp = numbers[i];
+
+            numbers[i] = numbers[j];
+
+            numbers[j] = temp;
+        }
+
+        return numbers;
+    }
+
+
+    /* ==================== */
+    /* 半荘開始 */
+    /* ==================== */
+
+    function startGame() {
+
+        changedTypes = [];
+
+        if (
+            document
+            .getElementById("man")
+            .checked
+        ) {
+
+            changedTypes.push("萬子");
+        }
+
+        if (
+            document
+            .getElementById("pin")
+            .checked
+        ) {
+
+            changedTypes.push("筒子");
+        }
+
+        if (
+            document
+            .getElementById("sou")
+            .checked
+        ) {
+
+            changedTypes.push("索子");
+        }
+
+
+        var sameOrder =
+            document
+            .getElementById("sameOrder")
+            .checked;
+
+
+        orders = {};
+
+        var sharedOrder = null;
+
+        if (
+            sameOrder &&
+            changedTypes.length >= 2
+        ) {
+
+            sharedOrder = makeOrder();
+        }
+
+
+        for (
+            var i = 0;
+            i < allTypes.length;
+            i++
+        ) {
+
+            var type = allTypes[i];
+
+            if (
+                changedTypes.indexOf(type) !== -1
+            ) {
+
+                if (sharedOrder) {
+
+                    orders[type] =
+                        sharedOrder.slice();
+
+                } else {
+
+                    orders[type] =
+                        makeOrder();
+                }
+
+            } else {
+
+                orders[type] = [
+                    1,2,3,4,5,6,7,8,9
+                ];
+            }
+        }
+
+
+        remainingChecks =
+            parseInt(
+                document
+                .getElementById("checkCount")
+                .value,
+                10
+            );
+
+
+        playerChecks = [];
+
+        for (
+            var i = 0;
+            i < playerNames.length;
+            i++
+        ) {
+
+            playerChecks[i] =
+                remainingChecks;
+        }
+
+
+        checkSeconds =
+            parseInt(
+                document
+                .getElementById("checkSeconds")
+                .value,
+                10
+            );
+
+
+        document
+        .getElementById("setup")
+        .classList
+        .add("hidden");
+
+
+        document
+        .getElementById("game")
+        .classList
+        .add("hidden");
+
+
+        document
+        .getElementById("result")
+        .classList
+        .add("hidden");
+
+
+        document
+        .getElementById("reveal")
+        .classList
+        .remove("hidden");
+
+
+        showOrders();
+
+
+        startTimer(
+            parseInt(
+                document
+                .getElementById("initialSeconds")
+                .value,
+                10
+            )
+        );
+    }
+
+
+    /* ==================== */
+    /* 牌の順番を表示 */
+    /* ==================== */
+
+    function showOrders() {
+
+        var area =
+            document
+            .getElementById("orders");
+
+        area.innerHTML = "";
+
+        for (
+            var i = 0;
+            i < allTypes.length;
+            i++
+        ) {
+
+            var type =
+                allTypes[i];
+
+            var suit =
+                document
+                .createElement("div");
+
+            suit.className = "suit";
+
+            var title =
+                document
+                .createElement("h3");
+
+            if (
+                changedTypes
+                .indexOf(type) !== -1
+            ) {
+
+                title.textContent =
+                    type + "（変更）";
+
+            } else {
+
+                title.textContent =
+                    type + "（変更なし）";
+            }
+
+            var tiles =
+                document
+                .createElement("div");
+
+            tiles.className = "tiles";
+
+            for (
+                var j = 0;
+                j < orders[type].length;
+                j++
+            ) {
+
+                var number =
+                    orders[type][j];
+
+                var tile =
+                    document
+                    .createElement("div");
+
+                tile.className = "tile";
+
+                tile.textContent =
+                    tileSymbols[type][number - 1];
+
+                tiles.appendChild(tile);
+            }
+
+            suit.appendChild(title);
+
+            suit.appendChild(tiles);
+
+            area.appendChild(suit);
+        }
+    }
+
+
+    /* ==================== */
+    /* タイマー */
+    /* ==================== */
+
+    function startTimer(seconds) {
+
+        clearInterval(timer);
+
+        var remaining = seconds;
+
+        document
+        .getElementById("countdown")
+        .textContent =
+            "確認時間：" +
+            remaining +
+            "秒";
+
+        timer =
+            setInterval(
+                function() {
+
+                    remaining--;
+
+                    document
+                    .getElementById("countdown")
+                    .textContent =
+                        "確認時間：" +
+                        remaining +
+                        "秒";
+
+                    if (
+                        remaining <= 0
+                    ) {
+
+                        clearInterval(timer);
+
+                        finishReveal();
+                    }
+
+                },
+                1000
+            );
+    }
+
+
+    /* ==================== */
+    /* 確認画面を終了 */
+    /* ==================== */
+
+    function finishReveal() {
+
+        clearInterval(timer);
+
+        document
+        .getElementById("reveal")
+        .classList
+        .add("hidden");
+
+        document
+        .getElementById("game")
+        .classList
+        .remove("hidden");
+
+        updateGamePanel();
+    }
+
+
+    /* ==================== */
+    /* 再確認 */
+    /* ==================== */
+
+    function useCheckForPlayer(playerIndex) {
+
+        if (
+            playerChecks[playerIndex] <= 0
+        ) {
+
+            alert(
+                playerNames[playerIndex] +
+                "は再確認できる回数がありません。"
+            );
+
+            return;
+        }
+
+        playerChecks[playerIndex]--;
+
+        document
+        .getElementById("game")
+        .classList
+        .add("hidden");
+
+        document
+        .getElementById("reveal")
+        .classList
+        .remove("hidden");
+
+        showOrders();
+
+        startTimer(
+            checkSeconds
+        );
+    }
+
+
+    /* ==================== */
+    /* 半荘中の表示 */
+    /* ==================== */
+
+    function updateGamePanel() {
+
+        var panel =
+            document
+            .getElementById("gamePanel");
+
+        panel.innerHTML = "";
+
+        var players = playerNames;
+
+        for (
+            var i = 0;
+            i < players.length;
+            i++
+        ) {
+
+            var player = players[i];
+
+            var row =
+                document.createElement("div");
+
+            row.style.marginBottom = "10px";
+
+            row.innerHTML =
+                player +
+                "　残り" +
+                playerChecks[i] +
+                "回";
+
+            var button =
+                document.createElement("button");
+
+            button.textContent =
+                player + " 再確認";
+
+            button.onclick =
+                (function(p) {
+
+                    return function() {
+
+                        useCheckForPlayer(p);
+
+                    };
+
+                })(i);
+
+            row.appendChild(button);
+
+            panel.appendChild(row);
+        }
+    }
+
+
+    /* ==================== */
+    /* 半荘終了 */
+    /* ==================== */
+function showEndConfirm() {
+
+    document
+    .getElementById("game")
+    .classList
+    .add("hidden");
+
+    document
+    .getElementById("confirmEnd")
+    .classList
+    .remove("hidden");
+}
+
+function cancelEndGame() {
+
+    document
+    .getElementById("confirmEnd")
+    .classList
+    .add("hidden");
+
+    document
+    .getElementById("game")
+    .classList
+    .remove("hidden");
+}
+    function endGame() {
+document
+.getElementById("confirmEnd")
+.classList
+.add("hidden");
+        clearInterval(timer);
+
+        showResultOrders();
+
+        document
+        .getElementById("game")
+        .classList
+        .add("hidden");
+
+        document
+        .getElementById("reveal")
+        .classList
+        .add("hidden");
+
+        document
+        .getElementById("result")
+        .classList
+        .remove("hidden");
+    }
+
+
+    /* ==================== */
+    /* 結果表示 */
+    /* ==================== */
+
+    function showResultOrders() {
+
+        var area =
+            document
+            .getElementById("resultOrders");
+
+        area.innerHTML = "";
+
+        for (
+            var i = 0;
+            i < allTypes.length;
+            i++
+        ) {
+
+            var type =
+                allTypes[i];
+
+            var suit =
+                document
+                .createElement("div");
+
+            suit.className = "suit";
+
+            var title =
+                document
+                .createElement("h3");
+
+            if (
+                changedTypes
+                .indexOf(type) !== -1
+            ) {
+
+                title.textContent =
+                    type + "（変更）";
+
+            } else {
+
+                title.textContent =
+                    type + "（変更なし）";
+            }
+
+            var tiles =
+                document
+                .createElement("div");
+
+            tiles.className = "tiles";
+
+            for (
+                var j = 0;
+                j < orders[type].length;
+                j++
+            ) {
+
+                var number =
+                    orders[type][j];
+
+                var tile =
+                    document
+                    .createElement("div");
+
+                tile.className = "tile";
+
+                tile.textContent =
+                    tileSymbols[type][number - 1];
+
+                tiles.appendChild(tile);
+            }
+
+            suit.appendChild(title);
+
+            suit.appendChild(tiles);
+
+            area.appendChild(suit);
+        }
+    }
+
+
+    /* ==================== */
+    /* 最初に戻る */
+    /* ==================== */
+
+    function backToStart() {
+
+        clearInterval(timer);
+
+        document
+        .getElementById("result")
+        .classList
+        .add("hidden");
+
+        document
+        .getElementById("game")
+        .classList
+        .add("hidden");
+
+        document
+        .getElementById("reveal")
+        .classList
+        .add("hidden");
+
+        document
+        .getElementById("setup")
+        .classList
+        .add("hidden");
+
+        document
+        .getElementById("playerSetup")
+        .classList
+        .remove("hidden");
+    }
+
+</script>
+
+</body>
+</html>
